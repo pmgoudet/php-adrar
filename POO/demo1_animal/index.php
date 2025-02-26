@@ -24,9 +24,8 @@ class Animal
         return $this->couleur;
     }
 
-
-
     //METHOD
+
     public function seNourrir(?string $aliment): string | array
     {
         if ($aliment == 'poison') {
