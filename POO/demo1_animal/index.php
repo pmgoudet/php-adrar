@@ -1,51 +1,21 @@
 <?php
 
-class Animal
-{
-    //ATTRIBUTS
-    public ?string $nom;
-    private ?string $couleur;
-    public ?float $taille;
-    public ?int $age;
+include "./abris.php";
+include "./animal.php";
+include "./chien.php";
 
-    //CONSTRUCTEUR
-    //fonction pour pouvoir créer un Animal, en lui donnant les attributs
-    public function __construct(?string $nom, ?string $couleur, ?float $taille, ?int $age)
-    {
-        $this->nom = $nom;
-        $this->couleur = $couleur;
-        $this->taille = $taille;
-        $this->age = $age;
-    }
+// créons un chien
+$chien = new Chien("Medor", "Noir", 1.2, 5, "Noir", 4);
 
-    //GETTER ET SETTER
-    public function getCouleur(): ?string
-    {
-        return $this->couleur;
-    }
+print_r($chien);
+echo "<br><br>";
+$chien->seMultiplier($chien);
+echo "<br><br>";
+$chien->mettreAuMonde();
+echo "<br><br>";
 
-    //METHOD
+//donnons un abris a notre chien
+$chien->setAbris(new Abris("Ma Niche"));
+echo "<br><br>";
 
-    public function seNourrir(?string $aliment): string | array
-    {
-        if ($aliment == 'poison') {
-            return "Mange pas ça, tu vas mourir !";
-        } else {
-            return [$aliment, "il a bon goût !", $this->nom . " a aimé son repas!"];
-        }
-    }
-}
-
-
-$chien = new Animal('chien', 'noir', 1.10, 5);
-echo "<p>$chien->nom</p>";
-echo "<p>" . $chien->getCouleur() . "</p>";
-
-// echo "J'ai un " . $chien->nom . ". Il est de couleur " . $chien->couleur . " . Et il a " . $chien->age . " ans.";
-
-// $reponse = $chien->seNourrir('viande');
-// if (gettype($reponse) == 'string') {
-//     echo "<p>$reponse</p>";
-// } else {
-//     echo "<p>{$reponse[2]}</p>";
-// }
+print_r($chien);

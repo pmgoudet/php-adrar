@@ -58,9 +58,9 @@ class Vehicule
         }
     }
 
-    public function boost(): int
+    public function boost(): void
     {
-        return $this->vitesse += 50;
+        $this->setVitesse($this->getVitesse() + 50);
     }
 
     public function plusRapide(Vehicule $autre): Vehicule | string
