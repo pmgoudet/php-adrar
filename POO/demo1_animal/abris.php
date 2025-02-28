@@ -20,6 +20,12 @@ class Abris
         return $this;
     }
 
+    //*Documentation du code abriter()
+    /**
+     * abriter() : afficher une string
+     * @param : void
+     * @return : void
+     */
     public function  abriter(): void
     {
         echo "Je m'abrite dans " . $this->getNom() . ".";

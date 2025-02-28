@@ -19,3 +19,8 @@ $chien->setAbris(new Abris("Ma Niche"));
 echo "<br><br>";
 
 print_r($chien);
+echo "<br><br>";
+
+//e se eu quiser pegar a função abriter() para saber onde meu animal se abriga? Não dá pra ser com 
+//$chien->abriter() pq o chien não tem esse atributo. Então:
+$chien->getAbris()->abriter();

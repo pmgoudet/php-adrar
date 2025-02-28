@@ -44,6 +44,12 @@ class Chien extends Animal
         echo "<p>Je me bâs.</p>";
     }
 
+    //*Documentation du code seMultiplier()
+    /**
+     * seMultiplier() : appel la méthode accoucher() rédéfinie dans la classe chien
+     * @param : $partenaire de tupe Animal
+     * @return : void
+     */
     public function seMultiplier(Animal $partenaire): void
     {
         // on ne peut pas avoir un return parce que, grace au parent, le retour est toujour void. Ça ce change pas.

@@ -64,7 +64,7 @@ class Animal
         return $this;
     }
 
-    public function getAbris(): ?string
+    public function getAbris(): ?Abris
     {
         return $this->abris;
     }
