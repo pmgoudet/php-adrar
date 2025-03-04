@@ -6,11 +6,11 @@ class ModelUser
     private ?string $nickname;
     private ?string $email;
     private ?string $password;
-    private ?PDO $bdd;
+    private PDO $bdd;
 
     public function __construct()
     {
-        $this->bdd = Connect();
+        $this->bdd = connect();
     }
 
     /**
@@ -117,16 +117,49 @@ class ModelUser
     //METHOD
     public function add(): string
     {
-        return "Message de confirmation, ou message d'erreur"; //! ============
+        try {
+            $req = $this->getBdd()->prepare("INSERT INTO users (`nickname`, `email`, `psswrd`) VALUES (?,?,?);");
+
+            $nickname = $this->getNickname();
+            $email = $this->getEmail();
+            $password = $this->getPassword();
+
+            $req->bindParam(1, $nickname, PDO::PARAM_STR);
+            $req->bindParam(2, $email, PDO::PARAM_STR);
+            $req->bindParam(3, $password, PDO::PARAM_STR);
+            $req->execute();
+
+            return "L'enregistrement de $nickname, dont l'email est $email, a été effectué avec succès.";
+        } catch (EXCEPTION $error) {
+            return $error->getMessage();
+        }
     }
 
-    public function getAll(?PDO $bdd): array | string
+    public function getAll(): array | string
     {
-        return "Elle renvoie soit un tableau d'utilisateur, soit une message d'erreur"; //! ==================
+        try {
+            $req = $this->bdd->prepare('SELECT `nickname`, email FROM users');
+            $req->execute();
+            $data = $req->fetchAll(PDO::FETCH_ASSOC);
+
+            return $data;
+        } catch (EXCEPTION $e) {
+            return $e->getMessage();
+        }
     }
 
-    public function getByEmail(ModelUser $email): array | string
+    public function getByEmail(): array | string
     {
-        return "Elle renvoie soit un tableau correspondant à l'utilisateur, soit un message d'erreur"; //! ==================
+        try {
+            $req = $this->bdd->prepare("SELECT `email` FROM users WHERE email = ? LIMIT 1");
+            $email = $this->getEmail();
+            $req->bindParam(1, $email, PDO::PARAM_STR);
+            $req->execute();
+            $data = $req->fetchAll(PDO::FETCH_ASSOC);
+
+            return $data;
+        } catch (EXCEPTION $e) {
+            return $e->getMessage();
+        }
     }
 }

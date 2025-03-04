@@ -1,54 +1,40 @@
 <?php
 
-class ControllerHome
+include "./utils/utils.php";
+include "./model/modelUser.php";
+include "./view/viewHome.php";
+include "./genericController.php";
+
+class ControllerHome extends GenericController
 {
     private ?ViewHome $viewHome;
-    private ?ModelUser $ModelUser;
+    private ?ModelUser $modelUser;
 
     public function __construct(?ViewHome $newViewHome, ?ModelUser $newModelUser)
     {
         $this->viewHome = $newViewHome;
-        $this->ModelUser = $newModelUser;
+        $this->modelUser = $newModelUser;
     }
 
-    /**
-     * Get the value of viewHome
-     * @return ?viewHome
-     */
     public function getViewHome(): ?ViewHome
     {
         return $this->viewHome;
     }
 
-    /**
-     * Set the value of viewHome
-     * @param ?viewHome $viewHome
-     * @return self
-     */
     public function setViewHome(?ViewHome $viewHome): self
     {
         $this->viewHome = $viewHome;
         return $this;
     }
 
-    /**
-     * Get the value of ModelUser
-     * @return ?ModelUser
-     */
     public function getModelUser(): ?ModelUser
     {
-        return $this->ModelUser;
+        return $this->modelUser;
     }
-
-    /**
-     * Set the value of ModelUser
-     * @param ?ModelUser $ModelUser
-     * @return self
-     */
 
     public function setModelUser(?ModelUser $ModelUser): self
     {
-        $this->ModelUser = $ModelUser;
+        $this->modelUser = $ModelUser;
         return $this;
     }
 
@@ -77,6 +63,7 @@ class ControllerHome
 
                         if (empty($data)) {
                             $this->getModelUser()->setNickname($nickname)->setEmail($email)->setPassword($password);
+
                             $this->getViewHome()->setMessage($this->getModelUser()->add());
                         } else {
                             return "Cet adresse mail existe déjà sur un autre compte.";
@@ -94,6 +81,50 @@ class ControllerHome
         return '';
     }
 
+    public function signUp(): string
+    {
+        $connectionMsg = '';
+
+        session_start();
+
+        //btn submit
+        if (isset($_POST['submitConnection'])) {
+
+            //variables not vides ou nulls
+            if (isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['mdp']) && !empty($_POST['mdp'])) {
+
+                //validation adresse mail
+                if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                    $email = sanitize($_POST['email']);
+                    $password = sanitize($_POST['mdp']);
+
+                    //verification du mail
+                    $this->getModelUser()->setEmail($email);
+                    $data = $this->getModelUser()->getByEmail();
+                    if (!empty($data)) {
+                        if (password_verify($password, $data[0]['psswrd'])) {
+                            $_SESSION['id'] = $data[0]['id'];
+                            $_SESSION['nickname'] = $data[0]['nickname'];
+                            $_SESSION['email'] = $data[0]['email'];
+
+                            header('Location:controllerAccount.php');
+                        } else {
+                            $connectionMsg = "Email et/ou mdp incorrect(s).";
+                        }
+                    } else {
+                        $connectionMsg = "Email et/ou mdp incorrect(s).";
+                    }
+                } else {
+                    $connectionMsg = "Le mail n'est pas au bon format.";
+                }
+            } else {
+                $connectionMsg = 'Veuillez remplir les champs obligatoires.';
+            }
+        }
+
+        return $connectionMsg;
+    }
+
     public function readUsers(): string
     {
         $usersList = '';
@@ -107,9 +138,14 @@ class ControllerHome
 
     public function render(): void
     {
-        $message = $this->signIn();
-        $this->signIn();
+        echo $this->setViewHeader(new ViewHeader)->getViewHeader()->displayView();
+
         $this->getViewHome()->setUsersList($this->readUsers());
-        echo $this->getViewHome()->setMessage($message)->displayView();
+        echo $this->getViewHome()->setMessage($this->signIn())->setConnectionMsg($this->signUp())->displayView();
+
+        echo $this->setViewFooter(new ViewFooter)->getViewFooter()->displayView();
     }
 }
+
+$home = new ControllerHome(new ViewHome, new ModelUser);
+$home->render();

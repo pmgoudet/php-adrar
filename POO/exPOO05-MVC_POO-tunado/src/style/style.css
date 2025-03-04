@@ -1,0 +1,18 @@
+header, footer {
+  background-color: rgb(61, 61, 61);
+  color: white;
+  padding: 20px;
+
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 80px;
+  }
+
+  a {
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+  }
+}
+
